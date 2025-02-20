@@ -12,7 +12,7 @@ r = httpx.Client(http2=True)
 
 # 获取当前积分
 def get_point():
-    res = r.get('https://www.bugutv.org/user').text
+    res = r.get('https://www.bugutv.vip/user').text
     time.sleep(1)
     point_now = re.findall(r'<span class="badge badge-warning-lighten"><i class="fas fa-coins"></i> (.*?)</span>', res)[
         0]
@@ -26,7 +26,7 @@ def login(uname, upassword):
     print("准备登录")
     # 进行登录
     data = {'action': "user_login", 'username': uname, 'password': upassword, 'rememberme': 1}
-    res = r.post('https://www.bugutv.org/wp-admin/admin-ajax.php', data=data).text
+    res = r.post('https://www.bugutv.vip/wp-admin/admin-ajax.php', data=data).text
     time.sleep(1)
     print('登录结果：' + res)
     if '\\u767b\\u5f55\\u6210\\u529f' in res:
@@ -39,20 +39,20 @@ def login(uname, upassword):
 # 退出登录
 def logout(wpnonce):
     res = r.get(
-        'https://www.bugutv.org/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fwww.bugutv.org&_wpnonce=' + wpnonce
+        'https://www.bugutv.vip/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fwww.bugutv.org&_wpnonce=' + wpnonce
     ).text
     print('退出登录')
 
 
 # 进行签到
 def checkin():
-    res = r.get('https://www.bugutv.org/user').text
+    res = r.get('https://www.bugutv.vip/user').text
     time.sleep(1)
     data_nonce = re.findall(r'data-nonce="(.*?)" ', res)[0]
     print('准备签到：获取到签到页 data-nonce: ' + data_nonce)
 
     data = {'action': 'user_qiandao', "nonce": data_nonce}
-    res = r.post('https://www.bugutv.org/wp-admin/admin-ajax.php', data=data).text
+    res = r.post('https://www.bugutv.vip/wp-admin/admin-ajax.php', data=data).text
     time.sleep(1)
     print('签到结果：' + res)
     if '\\u4eca\\u65e5\\u5df2\\u7b7e\\u5230' in res:
@@ -87,12 +87,6 @@ def run():
             print('****************布谷TV签到：结果统计****************')
             print(body)
             print('************************************************')
-
-            ret = r.get("https://www.bugutv.org/user").text
-            wpnonce = re.findall(r'action=logout&amp;redirect_to=https%3A%2F%2Fwww.bugutv.org&amp;_wpnonce=(.*?)', ret)[0]
-            # 退出登录
-            logout(wpnonce)
-            sys.exit(0)
         except Exception as e:
             print('line: ' + str(e.__traceback__.tb_lineno) + ' ' + repr(e))
             time.sleep(10)
@@ -100,4 +94,9 @@ def run():
 
 if __name__ == '__main__':
     run()
+    ret = r.get("https://www.bugutv.vip/user").text
+    wpnonce = re.findall(r'action=logout&amp;redirect_to=https%3A%2F%2Fwww.bugutv.vip&amp;_wpnonce=(.*?)', ret)[0]
+    # 退出登录
+    logout(wpnonce)
+    sys.exit(0)
 
