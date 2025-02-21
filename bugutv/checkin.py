@@ -82,21 +82,23 @@ def run():
             # 发送邮件通知
             subject = '布谷TV签到：获得' + str(int(point_2) - int(point_1)) + '个积分'
             body = default_config['uname'] + '本次获得积分: ' + str(int(point_2) - int(point_1)) + '个\n' + '累计积分: ' + str(int(point_2)) + '个'
-            send_mail.send_email(subject, body)
 
             print('****************布谷TV签到：结果统计****************')
             print(body)
             print('************************************************')
+            send_mail.send_email(subject, body)
+            sys.exit(0)
         except Exception as e:
             print('line: ' + str(e.__traceback__.tb_lineno) + ' ' + repr(e))
             time.sleep(10)
+        finally:
+            ret = r.get("https://www.bugutv.vip/user").text
+            wpnonce = re.findall(r'action=logout&amp;redirect_to=https%3A%2F%2Fwww.bugutv.vip&amp;_wpnonce=(.*?)', ret)[
+                0]
+            # 退出登录
+            logout(wpnonce)
 
 
 if __name__ == '__main__':
     run()
-    ret = r.get("https://www.bugutv.vip/user").text
-    wpnonce = re.findall(r'action=logout&amp;redirect_to=https%3A%2F%2Fwww.bugutv.vip&amp;_wpnonce=(.*?)', ret)[0]
-    # 退出登录
-    logout(wpnonce)
-    sys.exit(0)
 
